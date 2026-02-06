@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { loginUser, registerUser, checkIsAdmin } from '../services/firebase';
+import { loginUser, registerUser, checkIsAdmin } from '../services/supabase';
 import { Button, Input } from '../components/Shared';
 import { LogIn, UserPlus, ShieldCheck } from 'lucide-react';
 

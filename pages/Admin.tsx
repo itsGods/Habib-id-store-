@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Routes, Link, useNavigate, useParams, Navigate } from 'react-router-dom';
-import { User } from 'firebase/auth';
-import { logoutUser, subscribeToAuth, addAccount, updateAccount, deleteAccount, uploadImage, getAccounts, getAccountById, checkIsAdmin } from '../services/firebase';
+import { User } from '@supabase/supabase-js';
+import { logoutUser, subscribeToAuth, addAccount, updateAccount, deleteAccount, uploadImage, getAccounts, getAccountById, checkIsAdmin } from '../services/supabase';
 import { Account, AccountStatus, AccountCategory, AccountFormData } from '../types';
 import { Button, Input } from '../components/Shared';
 import { Plus, Edit, Trash2, LogOut, Image as ImageIcon, BarChart, ChevronLeft } from 'lucide-react';
@@ -187,8 +187,13 @@ const Editor = () => {
     const urls: string[] = [];
     
     for (let i = 0; i < e.target.files.length; i++) {
-      const url = await uploadImage(e.target.files[i]);
-      urls.push(url);
+      try {
+        const url = await uploadImage(e.target.files[i]);
+        urls.push(url);
+      } catch (err) {
+        console.error("Upload failed", err);
+        alert("Failed to upload image. Make sure you are logged in.");
+      }
     }
     
     setForm(prev => ({
@@ -217,7 +222,8 @@ const Editor = () => {
       }
       navigate('/admin');
     } catch (err) {
-      alert('Error saving');
+      console.error(err);
+      alert('Error saving. Check console for details.');
     } finally {
       setLoading(false);
     }

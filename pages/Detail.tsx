@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Account, AccountStatus } from '../types';
-import { getAccountById } from '../services/firebase';
+import { getAccountById } from '../services/supabase';
 import { StatusBadge, CategoryBadge, Button } from '../components/Shared';
 import { ChevronLeft, MessageCircle, Shield, Target, Award, PlayCircle, Layers, Check, Share2, ShieldCheck } from 'lucide-react';
 
@@ -27,7 +27,6 @@ export const Detail: React.FC = () => {
   // Include current URL in the WhatsApp message for easier context
   const currentUrl = window.location.href;
   const waMessage = encodeURIComponent(`Hi, I'm interested in the account "${account.title}" (ID: ${account.id}) priced at ₹${account.price.toLocaleString('en-IN')}. Is it still available?\n\nLink: ${currentUrl}`);
-  // Updated phone number as requested
   const waLink = `https://wa.me/917602629250?text=${waMessage}`;
 
   const handleShare = async () => {

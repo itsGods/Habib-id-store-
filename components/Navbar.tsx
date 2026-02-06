@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Lock, LogIn, User, LogOut } from 'lucide-react';
-import { subscribeToAuth, logoutUser, checkIsAdmin } from '../services/firebase';
+import { subscribeToAuth, logoutUser, checkIsAdmin } from '../services/supabase';
 
 export const Navbar: React.FC = () => {
   const [user, setUser] = useState<any>(null);

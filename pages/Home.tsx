@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Account, AccountCategory } from '../types';
-import { getAccounts } from '../services/firebase';
+import { getAccounts } from '../services/supabase';
 import { AccountCard } from '../components/AccountCard';
 import { Button, Input } from '../components/Shared';
 import { Search, Filter, Flame, ShieldCheck, Zap, Headphones, ChevronRight } from 'lucide-react';
