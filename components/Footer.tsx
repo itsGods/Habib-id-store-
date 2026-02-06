@@ -27,10 +27,20 @@ export const Footer: React.FC = () => {
               Level up your legacy today.
             </p>
             <div className="flex gap-4">
-               <a href="#" className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-gaming-neon hover:text-black transition-all">
+               <a 
+                 href="https://t.me/its_Gods" 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-gaming-neon hover:text-black transition-all"
+                 title="Join Telegram Channel"
+               >
                  <MessageCircle size={18} />
                </a>
-               <a href="#" className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-gaming-neon hover:text-black transition-all">
+               <a 
+                 href="mailto:truexgods@gmail.com" 
+                 className="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-gaming-neon hover:text-black transition-all"
+                 title="Send Email"
+               >
                  <Mail size={18} />
                </a>
             </div>
