@@ -9,14 +9,14 @@ interface Props {
 }
 
 export const AccountCard: React.FC<Props> = ({ account }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLAnchorElement>(null);
   const [rotation, setRotation] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
 
   const isAvailable = account.status === AccountStatus.AVAILABLE;
   const isPremium = account.category === 'PREMIUM' || account.price > 15000;
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!cardRef.current || window.innerWidth < 768) return; // Disable tilt on mobile
     
     const rect = cardRef.current.getBoundingClientRect();
@@ -38,7 +38,7 @@ export const AccountCard: React.FC<Props> = ({ account }) => {
   };
 
   return (
-    <div className="card-3d-wrapper h-full py-2">
+    <div className="card-3d-wrapper h-full py-1 md:py-2">
       <Link 
         to={`/account/${account.id}`}
         ref={cardRef}
@@ -49,7 +49,7 @@ export const AccountCard: React.FC<Props> = ({ account }) => {
           transform: `perspective(1000px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
           transition: 'transform 0.1s ease-out'
         }}
-        className="block relative h-full bg-gaming-900 border border-white/10 group cursor-pointer overflow-hidden"
+        className="block relative h-full bg-gaming-900 border border-white/10 group cursor-pointer overflow-hidden active:scale-[0.98] transition-all duration-100"
       >
         {/* --- Scanning Laser Effect --- */}
         <div className={`absolute top-0 left-0 w-full h-[2px] bg-gaming-neon/80 shadow-[0_0_15px_rgba(255,215,0,0.8)] z-30 pointer-events-none transition-all duration-[1.5s] ease-in-out ${isHovered ? 'translate-y-[350px] opacity-100' : '-translate-y-10 opacity-0'}`} />
@@ -95,44 +95,44 @@ export const AccountCard: React.FC<Props> = ({ account }) => {
         </div>
 
         {/* Info Area */}
-        <div className="p-4 relative">
+        <div className="p-3 md:p-4 relative">
            {/* Scanline background in card content */}
            <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:100%_3px] pointer-events-none" />
            
-           <h3 className="font-display font-bold text-slate-100 text-base leading-tight mb-3 truncate group-hover:text-gaming-neon transition-colors">
+           <h3 className="font-display font-bold text-slate-100 text-sm md:text-base leading-tight mb-2 md:mb-3 truncate group-hover:text-gaming-neon transition-colors">
              {account.title}
            </h3>
 
            {/* Compact Stats Grid */}
-           <div className="grid grid-cols-2 gap-1 mb-4">
-              <div className="bg-white/5 border border-white/5 p-1.5 flex items-center gap-2 rounded-sm">
-                 <Trophy size={10} className="text-gaming-neon" />
-                 <span className="text-[10px] font-mono text-slate-400 uppercase">Lv.{account.level}</span>
+           <div className="grid grid-cols-2 gap-1 mb-3 md:mb-4">
+              <div className="bg-white/5 border border-white/5 p-1 md:p-1.5 flex items-center gap-1.5 rounded-sm">
+                 <Trophy size={10} className="text-gaming-neon shrink-0" />
+                 <span className="text-[9px] md:text-[10px] font-mono text-slate-400 uppercase">Lv.{account.level}</span>
               </div>
-              <div className="bg-white/5 border border-white/5 p-1.5 flex items-center gap-2 rounded-sm">
-                 <Shield size={10} className="text-blue-400" />
-                 <span className="text-[10px] font-mono text-slate-400 uppercase truncate">{account.rankBr}</span>
+              <div className="bg-white/5 border border-white/5 p-1 md:p-1.5 flex items-center gap-1.5 rounded-sm">
+                 <Shield size={10} className="text-blue-400 shrink-0" />
+                 <span className="text-[9px] md:text-[10px] font-mono text-slate-400 uppercase truncate">{account.rankBr}</span>
               </div>
-              <div className="bg-white/5 border border-white/5 p-1.5 flex items-center gap-2 rounded-sm">
-                 <Zap size={10} className="text-purple-400" />
-                 <span className="text-[10px] font-mono text-slate-400 uppercase">{account.evoGunsCount} Evo</span>
+              <div className="bg-white/5 border border-white/5 p-1 md:p-1.5 flex items-center gap-1.5 rounded-sm">
+                 <Zap size={10} className="text-purple-400 shrink-0" />
+                 <span className="text-[9px] md:text-[10px] font-mono text-slate-400 uppercase">{account.evoGunsCount} Evo</span>
               </div>
-              <div className="bg-white/5 border border-white/5 p-1.5 flex items-center gap-2 rounded-sm">
-                 <Skull size={10} className="text-red-400" />
-                 <span className="text-[10px] font-mono text-slate-400 uppercase">{account.skinsCount} Skins</span>
+              <div className="bg-white/5 border border-white/5 p-1 md:p-1.5 flex items-center gap-1.5 rounded-sm">
+                 <Skull size={10} className="text-red-400 shrink-0" />
+                 <span className="text-[9px] md:text-[10px] font-mono text-slate-400 uppercase">{account.skinsCount} Skins</span>
               </div>
            </div>
 
            {/* Price & Action */}
-           <div className="flex items-end justify-between border-t border-white/10 pt-3">
+           <div className="flex items-end justify-between border-t border-white/10 pt-2 md:pt-3">
               <div>
-                <div className="text-[9px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Current Bid</div>
-                <div className="text-lg font-display font-bold text-white group-hover:text-gaming-neon transition-colors">
+                <div className="text-[8px] md:text-[9px] text-slate-500 font-bold uppercase tracking-widest mb-0.5">Price</div>
+                <div className="text-base md:text-lg font-display font-bold text-white group-hover:text-gaming-neon transition-colors">
                    ₹{account.price.toLocaleString('en-IN')}
                 </div>
               </div>
-              <div className={`w-8 h-8 flex items-center justify-center border transition-all duration-300 rounded-sm ${isHovered ? 'bg-gaming-neon border-gaming-neon text-black translate-x-1' : 'bg-white/5 border-white/10 text-slate-500'}`}>
-                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <div className={`w-7 h-7 md:w-8 md:h-8 flex items-center justify-center border transition-all duration-300 rounded-sm ${isHovered ? 'bg-gaming-neon border-gaming-neon text-black translate-x-1' : 'bg-white/5 border-white/10 text-slate-500'}`}>
+                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="md:w-4 md:h-4"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               </div>
            </div>
         </div>
