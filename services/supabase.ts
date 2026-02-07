@@ -9,7 +9,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 // --- MAPPERS ---
 // Convert DB Snake Case to App Camel Case
 const mapAccount = (row: any): Account => ({
-  id: row.id,
+  id: String(row.id), // Ensure ID is string to match Interface and route params
   title: row.title,
   description: row.description,
   price: row.price,
@@ -95,8 +95,21 @@ export const updateAccount = async (id: string, data: AccountFormData): Promise<
 };
 
 export const deleteAccount = async (id: string): Promise<void> => {
-  const { error } = await supabase.from('accounts').delete().eq('id', id);
-  if (error) throw error;
+  console.log(`[Supabase] Deleting account ${id}...`);
+  // Using .select() ensures we get confirmation from the server, 
+  // helping identify if RLS silently blocked the delete.
+  const { data, error } = await supabase.from('accounts').delete().eq('id', id).select();
+  
+  if (error) {
+    console.error("Supabase Delete Error:", error);
+    throw error;
+  }
+  
+  if (!data || data.length === 0) {
+    console.warn("Delete operation completed but no rows were returned. This might indicate the ID was not found or RLS policies prevented deletion.");
+  } else {
+    console.log("Delete successful:", data);
+  }
 };
 
 export const uploadImage = async (file: File): Promise<string> => {

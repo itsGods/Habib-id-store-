@@ -18,9 +18,17 @@ export const Auth: React.FC = () => {
     setLoading(true);
 
     try {
+      let submitEmail = email;
+      
+      // Admin Shortcut: Allow login with just 'admin' or 'habib'
+      if (isLogin && (email.toLowerCase() === 'admin' || email.toLowerCase() === 'habib')) {
+        submitEmail = 'admin@demo.com';
+      }
+
       if (isLogin) {
-        await loginUser(email, password);
-        if (email === 'admin@demo.com') {
+        await loginUser(submitEmail, password);
+        // Check strict equality with the resolved email
+        if (submitEmail === 'admin@demo.com') {
            navigate('/admin');
         } else {
            navigate('/');
@@ -81,13 +89,13 @@ export const Auth: React.FC = () => {
           
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input 
-              label="Agent Email" 
+              label={isLogin ? "Agent ID / Email" : "Agent Email"}
               value={email} 
               onChange={e => setEmail(e.target.value)} 
-              type="email" 
-              placeholder="IDENTIFIER..." 
+              type="text" 
+              placeholder={isLogin ? "USERNAME OR EMAIL" : "EMAIL ADDRESS"}
               required 
-              autoComplete="off"
+              autoComplete="username"
             />
             <Input 
               label="Access Code" 
@@ -96,6 +104,7 @@ export const Auth: React.FC = () => {
               type="password" 
               placeholder="••••••••" 
               required 
+              autoComplete="current-password"
             />
             
             <div className="mt-8">

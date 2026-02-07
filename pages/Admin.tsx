@@ -4,7 +4,7 @@ import { User } from '@supabase/supabase-js';
 import { logoutUser, subscribeToAuth, addAccount, updateAccount, deleteAccount, uploadImage, getAccounts, getAccountById, checkIsAdmin } from '../services/supabase';
 import { Account, AccountStatus, AccountCategory, AccountFormData } from '../types';
 import { Button, Input } from '../components/Shared';
-import { Plus, Edit, Trash2, LogOut, Image as ImageIcon, BarChart, ChevronLeft } from 'lucide-react';
+import { Plus, Edit, Trash2, LogOut, Image as ImageIcon, BarChart, ChevronLeft, Loader2 } from 'lucide-react';
 
 // --- WRAPPER ---
 export const AdminPanel: React.FC = () => {
@@ -48,20 +48,35 @@ export const AdminPanel: React.FC = () => {
 // --- DASHBOARD ---
 const Dashboard: React.FC<{ user: any }> = ({ user }) => {
   const [accounts, setAccounts] = useState<Account[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
-    getAccounts().then(setAccounts);
+    getAccounts().then(data => {
+      setAccounts(data);
+      setLoading(false);
+    });
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (confirm('Delete this listing permanently?')) {
-      await deleteAccount(id);
-      setAccounts(accounts.filter(a => a.id !== id));
+    if (confirm('Delete this listing permanently? This action cannot be undone.')) {
+      setDeletingId(id);
+      try {
+        await deleteAccount(id);
+        setAccounts(prev => prev.filter(a => a.id !== id));
+      } catch (error: any) {
+        console.error("Delete failed in UI", error);
+        alert(`Failed to delete account. Error: ${error.message || 'Unknown error'}`);
+      } finally {
+        setDeletingId(null);
+      }
     }
   };
 
   const soldCount = accounts.filter(a => a.status === AccountStatus.SOLD).length;
   const totalValue = accounts.filter(a => a.status === AccountStatus.AVAILABLE).reduce((acc, curr) => acc + curr.price, 0);
+
+  if (loading) return <div className="min-h-screen bg-slate-950 flex items-center justify-center text-gaming-neon"><div className="animate-spin w-8 h-8 border-4 border-current border-t-transparent rounded-full" /></div>;
 
   return (
     <div className="min-h-screen bg-slate-950 p-4 pb-24 md:p-8">
@@ -140,12 +155,22 @@ const Dashboard: React.FC<{ user: any }> = ({ user }) => {
                   <Link to={`/admin/edit/${acc.id}`} className="p-2.5 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors" title="Edit">
                     <Edit size={18} />
                   </Link>
-                  <button onClick={() => handleDelete(acc.id)} className="p-2.5 text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 rounded-lg transition-colors" title="Delete">
-                    <Trash2 size={18} />
+                  <button 
+                    onClick={() => handleDelete(acc.id)} 
+                    disabled={deletingId === acc.id}
+                    className="p-2.5 text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 rounded-lg transition-colors disabled:opacity-50" 
+                    title="Delete"
+                  >
+                    {deletingId === acc.id ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
                   </button>
                </div>
             </div>
           ))}
+          {accounts.length === 0 && (
+            <div className="text-center py-12 text-slate-500 bg-slate-900/30 rounded-xl border border-dashed border-slate-800">
+               No accounts in inventory. Click "Add Listing" to create one.
+            </div>
+          )}
         </div>
       </div>
     </div>
